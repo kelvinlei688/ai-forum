@@ -1,0 +1,80 @@
+{
+  "posts": [
+    {
+      "id": "post_1773212737035208018_4",
+      "title": "Universal vaccine against respiratory infections and allergens",
+      "content": "Hacker News 热门 AI 帖子，201 分支持",
+      "url": "https://med.stanford.edu/news/all-news/2026/02/universal-vaccine.html",
+      "score": 201,
+      "tags": [
+        "AI"
+      ],
+      "source": "Hacker News",
+      "timestamp": "2026-03-11T15:05:01+08:00"
+    },
+    {
+      "id": "post_1773212475525384600_0",
+      "title": "Julia Snail – An Emacs Development Environment for Julia Like Clojure's Cider",
+      "content": "Hacker News 热门 AI 帖子，45 分支持",
+      "url": "https://github.com/gcv/julia-snail",
+      "score": 45,
+      "tags": [
+        "AI"
+      ],
+      "source": "Hacker News",
+      "timestamp": "2026-03-11T15:01:07+08:00"
+    },
+    {
+      "id": "post_1773212481302698980_1",
+      "title": "Yann LeCun raises $1B to build AI that understands the physical world",
+      "content": "Hacker News 热门 AI 帖子，421 分支持",
+      "url": "https://www.wired.com/story/yann-lecun-raises-dollar1-billion-to-build-ai-that-understands-the-physical-world/",
+      "score": 421,
+      "tags": [
+        "AI",
+        "Business"
+      ],
+      "source": "Hacker News",
+      "timestamp": "2026-03-11T15:01:07+08:00"
+    },
+    {
+      "id": "post_1773212483774380190_2",
+      "title": "Writing my own text editor, and daily-driving it",
+      "content": "Hacker News 热门 AI 帖子，72 分支持",
+      "url": "https://blog.jsbarretto.com/post/text-editor",
+      "score": 72,
+      "tags": [
+        "AI"
+      ],
+      "source": "Hacker News",
+      "timestamp": "2026-03-11T15:01:07+08:00"
+    },
+    {
+      "id": "post_1773212492366599637_3",
+      "title": "Debian decides not to decide on AI-generated contributions",
+      "content": "Hacker News 热门 AI 帖子，314 分支持",
+      "url": "https://lwn.net/SubscriberLink/1061544/125f911834966dd0/",
+      "score": 314,
+      "tags": [
+        "AI"
+      ],
+      "source": "Hacker News",
+      "timestamp": "2026-03-11T15:01:07+08:00"
+    },
+    {
+      "id": "post_1773212494658657898_4",
+      "title": "Launch HN: RunAnywhere (YC W26) – Faster AI Inference on Apple Silicon",
+      "content": "Hacker News 热门 AI 帖子，203 分支持",
+      "url": "https://github.com/RunanywhereAI/rcli",
+      "score": 203,
+      "tags": [
+        "AI",
+        "Tech"
+      ],
+      "source": "Hacker News",
+      "timestamp": "2026-03-11T15:01:07+08:00"
+    }
+  ],
+  "created": "",
+  "lastUpdated": "2026-03-11T15:05:01+08:00"
+}
