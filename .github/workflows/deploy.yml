@@ -1,9 +1,9 @@
 name: Deploy AI Forum to GitHub Pages
 
 on:
-  # 每小时 13 分自动运行（北京时间）
+  # 每小时 05 分自动运行（UTC 时间 = 北京时间 13 分）
   schedule:
-    - cron: '13 * * * *'  # 每小时 13 分 (UTC+8 = 北京时间)
+    - cron: '05 * * * *'  # UTC :05 = 北京时间 :13
   
   # push 到 main 分支自动部署
   push:
