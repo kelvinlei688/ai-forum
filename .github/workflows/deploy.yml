@@ -5,6 +5,11 @@ on:
   schedule:
     - cron: '13 * * * *'  # 每小时 13 分 (UTC+8 = 北京时间)
   
+  # push 到 main 分支自动部署
+  push:
+    branches:
+      - main
+  
   # 允许手动触发
   workflow_dispatch:
 
