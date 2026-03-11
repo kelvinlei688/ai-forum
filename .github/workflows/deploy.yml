@@ -1,9 +1,9 @@
 name: Deploy AI Forum to GitHub Pages
 
 on:
-  # 每小时 5 分自动运行
+  # 每小时 13 分自动运行（北京时间）
   schedule:
-    - cron: '5 * * * *'  # 每小时 5 分 (UTC)
+    - cron: '13 * * * *'  # 每小时 13 分 (UTC+8 = 北京时间)
   
   # 允许手动触发
   workflow_dispatch:
@@ -32,19 +32,21 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install jq
-        run: sudo apt-get update && sudo apt-get install -y jq
+      - name: Install jq and curl
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq curl
 
       - name: Collect AI News
         run: |
-          chmod +x forum/publish.sh
-          cd forum
+          chmod +x publish.sh
+          echo "📝 当前目录：$(pwd)"
+          echo "📋 文件列表:"
+          ls -la
+          echo "🔧 执行 publish.sh..."
           bash publish.sh
+          echo "✅ 数据文件内容:"
+          cat data.json | head -50
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -52,7 +54,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './forum'
+          path: '.'
 
       - name: Deploy to GitHub Pages
         id: deployment
