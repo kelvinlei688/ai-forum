@@ -132,6 +132,55 @@
             letter-spacing: 1px;
             margin-top: 5px;
         }
+
+        /* 分类切换 */
+        .category-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .category-tab {
+            padding: 12px 28px;
+            border-radius: 30px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .category-tab:hover {
+            border-color: var(--accent-1);
+            color: var(--accent-1);
+            transform: translateY(-2px);
+        }
+
+        .category-tab.active {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            border-color: transparent;
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .category-tab.AI热点 {
+            --cat-color: var(--warning);
+        }
+        .category-tab.军事 {
+            --cat-color: #ff6b6b;
+        }
+        .category-tab.数码科技 {
+            --cat-color: var(--success);
+        }
+        .category-tab.AI热点.active,
+        .category-tab.军事.active,
+        .category-tab.数码科技.active {
+            background: linear-gradient(135deg, var(--cat-color), var(--accent-2));
+        }
         
         .search-section {
             background: var(--bg-card);
@@ -460,6 +509,13 @@
             </div>
         </header>
 
+        <!-- 分类切换 -->
+        <div class="category-tabs">
+            <button class="category-tab AI热点 active" data-category="AI热点" onclick="switchCategory('AI热点')">🤖 AI 热点</button>
+            <button class="category-tab 军事" data-category="军事" onclick="switchCategory('军事')">🗡️ 军事</button>
+            <button class="category-tab 数码科技" data-category="数码科技" onclick="switchCategory('数码科技')">💻 数码科技</button>
+        </div>
+
         <div class="search-section">
             <div class="search-bar">
                 <input type="text" class="search-input" id="searchInput" placeholder="🔍 搜索标题或标签..." onkeypress="if(event.key === 'Enter') filterPosts()">
@@ -478,7 +534,7 @@
         <div class="pagination" id="pagination"></div>
 
         <footer>
-            <p>🤖 自动抓取 AI 热点 | Powered by OpenClaw</p>
+            <p>🤖 每日热点聚合 · AI/军事/数码 | 自动抓取更新 | Powered by OpenClaw</p>
         </footer>
     </div>
 
@@ -491,10 +547,26 @@
 <script>
 let allPosts = [];
 let filteredPosts = [];
+let currentCategory = 'AI热点';
 let currentPage = 1;
 const postsPerPage = 10;
 let countdown = 60;
 let countdownInterval;
+
+// 分类切换
+function switchCategory(category) {
+    currentCategory = category;
+    currentPage = 1;
+    
+    // 更新active样式
+    document.querySelectorAll('.category-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.querySelector(`[data-category="${category}"]`).classList.add('active');
+    
+    // 重新过滤
+    filterPosts();
+}
 
 // 主题切换
 const themeKey = "ai-forum-theme";
@@ -546,9 +618,8 @@ function loadPosts() {
         .then(response => response.json())
         .then(data => {
             allPosts = data.posts || [];
-            filteredPosts = [...allPosts];
             updateStats(allPosts.length, data.lastUpdated || new Date());
-            renderPosts();
+            filterPosts();
             resetCountdown();
         })
         .catch(error => {
@@ -646,10 +717,13 @@ function filterPosts() {
     const searchText = document.getElementById("searchInput").value.toLowerCase().trim();
     currentPage = 1;
     
+    // 先按分类筛选
+    let postsByCategory = allPosts.filter(post => post.category === currentCategory);
+    
     if (!searchText) {
-        filteredPosts = [...allPosts];
+        filteredPosts = [...postsByCategory];
     } else {
-        filteredPosts = allPosts.filter(post => {
+        filteredPosts = postsByCategory.filter(post => {
             const titleMatch = post.title && post.title.toLowerCase().includes(searchText);
             const contentMatch = post.content && post.content.toLowerCase().includes(searchText);
             const tagMatch = post.tags && post.tags.some(tag => tag.toLowerCase().includes(searchText));
@@ -657,14 +731,14 @@ function filterPosts() {
         });
     }
     
+    // 更新统计
+    updateStats(filteredPosts.length, new Date());
     renderPosts();
 }
 
 function clearFilter() {
     document.getElementById("searchInput").value = "";
-    filteredPosts = [...allPosts];
-    currentPage = 1;
-    renderPosts();
+    filterPosts();
 }
 
 function resetCountdown() {
