@@ -294,21 +294,19 @@ else
     CREATED_TIME="$TIMESTAMP"
 fi
 
-# 去重合并（基于 title），每个分类保留最近 30 条（避免无限增长）
+# 去重合并（基于 title），保留所有历史热点
 MERGED_POSTS=$(jq -n \
     --argjson existing "$EXISTING_POSTS" \
     --argjson new "$NEW_POSTS_ARRAY" \
     '
-    # 按分类分组
+    # 合并去重：基于 title 去重，新帖子保留，旧帖子去重
     ($existing + $new) as $all_posts
     | $all_posts
-    | group_by(.category)
-    | map(
-        sort_by(-.score | .timestamp)
-        | .[0:30]  # 每个分类保留最多30条
+    | reverse  # 最新的在前，去重会保留第一个出现的（即最新的）
+    | reduce [] as $item (
+        [];
+        if (. | map(.title) | index($item.title)) then . else . + [$item] end
       )
-    | flatten
-    | reverse  # 最新的在前
     ' 2>/dev/null || echo "$EXISTING_POSTS")
 
 # 统计各分类
