@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ModernShop - 电商演示</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <h2>🛍️ ModernShop</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">首页</a></li>
+                <li><a href="#products">商品</a></li>
+                <li><a href="#about">关于</a></li>
+                <li><a href="#contact">联系</a></li>
+            </ul>
+            <div class="cart-icon">
+                <button id="cartBtn">🛒 <span id="cartCount">0</span></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero 区域 -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <h1>精选好物<br><span>品质生活</span></h1>
+                <p>发现优质商品，享受便捷购物体验</p>
+                <button class="cta-btn" onclick="scrollToProducts()">立即选购</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 商品列表 -->
+    <section class="products-section" id="products">
+        <div class="container">
+            <h2 class="section-title">热门商品</h2>
+            <div class="products-grid" id="productsGrid">
+                <!-- 商品通过JS加载 -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 购物车弹窗 -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>购物车</h3>
+                <span class="close" id="closeModal">&times;</span>
+            </div>
+            <div id="cartItems" class="cart-items">
+                <!-- 购物车商品 -->
+            </div>
+            <div class="cart-footer">
+                <div class="total">
+                    <strong>总计：</strong>
+                    <span id="cartTotal">¥0.00</span>
+                </div>
+                <button class="checkout-btn" onclick="checkout()">结算</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 关于 -->
+    <section class="about" id="about">
+        <div class="container">
+            <h2 class="section-title">关于我们</h2>
+            <p>ModernShop 是一个现代化电商演示网站，展示了响应式设计和交互动效。</p>
+            <p>这是一个纯前端 Demo，使用 HTML/CSS/JavaScript 构建。</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 ModernShop - 电商 Demo</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
