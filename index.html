@@ -4,224 +4,442 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 热点论坛 - 自动播报</title>
+    <meta name="description" content="自动收集 AI 圈热点新闻，实时更新">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
         :root {
-            --bg-gradient-start: #1a1a2e;
-            --bg-gradient-end: #16213e;
-            --text-primary: #e0e0e0;
-            --text-secondary: #cccccc;
-            --border-color: #333333;
-            --accent-1: #00d9ff;
-            --accent-2: #00ff88;
-            --danger: #ff6b6b;
-            --warning: #ffe66d;
-            --card-bg: rgba(255,255,255,0.05);
-            --card-bg-hover: rgba(255,255,255,0.08);
-            transition: all 0.3s ease;
+            --bg-primary: #0f0c29;
+            --bg-secondary: #302b63;
+            --bg-card: rgba(255, 255, 255, 0.08);
+            --bg-card-hover: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: #b8b8d4;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent-1: #667eea;
+            --accent-2: #764ba2;
+            --accent-3: #f093fb;
+            --accent-4: #4facfe;
+            --success: #43e97b;
+            --warning: #fa709a;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            --shadow-hover: 0 12px 48px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.light {
+            --bg-primary: #f5f7fa;
+            --bg-secondary: #c3cfe2;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f8f9fa;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
             min-height: 100vh;
             color: var(--text-primary);
-            padding-bottom: 120px;
+            padding-bottom: 100px;
+            line-height: 1.6;
         }
+
         .container { 
-            max-width: 900px; 
+            max-width: 960px; 
             margin: 0 auto; 
-            padding: 20px 15px; 
+            padding: 30px 20px; 
         }
+
         header {
             text-align: center;
-            padding: 30px 0;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 30px;
+            padding: 40px 0;
+            margin-bottom: 40px;
+            position: relative;
         }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+            border-radius: 2px;
+        }
+
         h1 {
-            font-size: 2.5em;
-            background: linear-gradient(90deg, var(--accent-1), var(--accent-2);
+            font-size: 3em;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-3), var(--accent-4));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 10px;
+            letter-spacing: -0.02em;
         }
-        .subtitle { color: var(--text-secondary); font-size: 1.1em; }
+
+        @media (max-width: 640px) {
+            h1 { font-size: 2em; }
+        }
+
+        .subtitle { 
+            color: var(--text-secondary); 
+            font-size: 1.15em;
+            font-weight: 400;
+        }
+
         .stats {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
+            gap: 40px;
+            margin-top: 30px;
             flex-wrap: wrap;
         }
-        .stat { text-align: center; padding: 5px; }
+
+        .stat { 
+            text-align: center;
+            padding: 15px 25px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            min-width: 100px;
+        }
+
         .stat-value { 
             font-size: 2em; 
-            font-weight: bold; 
-            color: var(--accent-1); 
+            font-weight: 700; 
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        .stat-label { color: var(--text-secondary); font-size: 0.9em; }
+
+        .stat-label { 
+            color: var(--text-secondary); 
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
         
+        .search-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 240px;
+            padding: 14px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            outline: none;
+            font-size: 1em;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-1);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 12px;
+            border: none;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            color: white;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--accent-1);
+        }
+
         .posts { 
             display: flex; 
             flex-direction: column; 
             gap: 20px; 
-            opacity: 0;
-            animation: fadeIn 0.5s ease forwards;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes postFadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+
         .post {
-            background: var(--card-bg);
+            background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px 15px;
-            transition: all 0.3s ease;
-            animation: postFadeIn 0.5s ease forwards;
-            animation-delay: calc(var(--animation-index) var(--post-delay));
-            --animation-index: calc(var(--i) * 0.1s);
+            border-radius: 16px;
+            padding: 28px 24px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            animation: fadeInUp 0.5s ease forwards;
             opacity: 0;
-            transform: translateY(10px);
+            transform: translateY(20px);
+            animation-delay: calc(var(--i) * 0.1s);
         }
+
         .post:hover {
-            background: var(--card-bg-hover);
+            background: var(--bg-card-hover);
             border-color: var(--accent-1);
-            transform: translateX(3px);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
         }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .post-header {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
         }
+
         .post-title {
-            font-size: 1.2em;
-            font-weight: 600;
+            font-size: 1.35em;
+            font-weight: 700;
             color: var(--text-primary);
             line-height: 1.4;
         }
+
         .post-meta {
             display: flex;
-            gap: 15px;
+            gap: 20px;
             align-items: center;
             flex-wrap: wrap;
+            color: var(--text-secondary);
+            font-size: 0.9em;
         }
-        .post-time { color: var(--text-secondary); font-size: 0.9em; }
+
+        .score {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 196, 107, 0.2));
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+
         .tags { 
             display: flex; 
             gap: 8px; 
             flex-wrap: wrap;
             margin: 10px 0;
         }
+
         .tag {
-            background: linear-gradient(90deg, var(--accent-1) 20%, var(--accent-2) 100%;
-            background-opacity: 0.2;
-            color: var(--accent-1);
-            padding: 4px 12px;
-            border: 1px solid var(--accent-1);
+            padding: 5px 14px;
             border-radius: 20px;
-            opacity: 0.8;
+            font-size: 0.85em;
+            font-weight: 500;
+            border: 1px solid var(--accent-1);
+            color: var(--accent-1);
+            background: rgba(102, 126, 234, 0.1);
+            transition: var(--transition);
             cursor: pointer;
-            transition: all 0.2s;
         }
-        .tag:hover { opacity: 1; }
-        .tag.ai { background: rgba(255, 107, 108, 0.2); color: #ff6b6b; border-color: #ff6b6b44; }
-        .tag.tech { background: rgba(78, 205, 196, 0.2); color: #4ecdac; border-color: #4ecdac; }
-        .tag.business { background: rgba(255, 230, 109, 0.2); color: #4ecdac; border-color: #4ecdac; }
-        .post-content { color: var(--text-secondary); line-height: 1.6; margin-bottom: 15px; }
+
+        .tag:hover {
+            background: var(--accent-1);
+            color: white;
+        }
+
+        .tag.AI {
+            border-color: var(--warning);
+            color: var(--warning);
+            background: rgba(250, 112, 154, 0.1);
+        }
+        .tag.AI:hover {
+            background: var(--warning);
+            color: white;
+        }
+
+        .tag.OpenSource, .tag.Tech {
+            border-color: var(--success);
+            color: var(--success);
+            background: rgba(67, 233, 123, 0.1);
+        }
+        .tag.OpenSource:hover, .tag.Tech:hover {
+            background: var(--success);
+            color: white;
+        }
+
+        .post-content { 
+            color: var(--text-secondary); 
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-size: 1em;
+        }
+
         .post-link {
-            display: inline-block;
-            background: linear-gradient(90deg, var(--accent-1), var(--accent-2);
-            color: var(--bg-gradient-start);
-            padding: 8px 20px;
-            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            color: white;
+            padding: 10px 24px;
+            border-radius: 10px;
             text-decoration: none;
             font-weight: 600;
-            transition: opacity 0.3s;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
         }
-        .post-link:hover { opacity: 0.8; }
+
+        .post-link:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
         .empty {
             text-align: center;
-            padding: 60px 20px;
+            padding: 80px 20px;
             color: var(--text-secondary);
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
         }
-        empty h3 { margin-bottom: 10px; color: var(--text-secondary); }
 
-        /* 搜索过滤 */
-        .search-bar {
-            margin: 20px 0;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .search-input {
-            flex: 1;
-            min-width: 200px;
-            padding: 12px 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background: var(--card-bg);
-            color: var(--text-primary);
-            outline: none;
-        }
-        .filter-btn {
-            padding: 12px 20px;
-            border-radius: 8px;
-            border: 1px solid var(--accent-1);
-            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
-            color: var(--bg-gradient-start);
-            font-weight: 600;
-        }
-        .filter-btn.clear {
-            border: 1px solid var(--border-color);
-            background: transparent;
+        .empty h3 { 
+            font-size: 1.5em;
+            margin-bottom: 10px; 
             color: var(--text-primary);
         }
-        /* 分页 */
+
         .pagination {
             display: flex;
             justify-content: center;
-            gap: 5px;
-            margin-top: 30px;
+            gap: 8px;
+            margin-top: 40px;
             flex-wrap: wrap;
         }
+
         .page-btn {
-            padding: 8px 14px;
-            border-radius: 6px;
+            padding: 10px 18px;
+            border-radius: 10px;
             border: 1px solid var(--border-color);
-            background: var(--card-bg);
+            background: var(--bg-card);
             color: var(--text-primary);
             cursor: pointer;
-            transition: all 0.2s;
+            transition: var(--transition);
+            font-weight: 500;
         }
+
+        .page-btn:hover {
+            border-color: var(--accent-1);
+            background: var(--bg-card-hover);
+        }
+
         .page-btn.active {
-            background: linear-gradient(90deg, var(--accent-1), var(--accent-2);
-            color: var(--bg-gradient-start);
-            font-weight: bold;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            color: white;
+            border: none;
         }
-        /* 主题切换按钮 */
-        .bottom-bar {
+
+        .bottom-float {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 25px;
+            right: 25px;
             display: flex;
-            gap: 10px;
-            align-items: center;
+            flex-direction: column;
+            gap: 12px;
         }
-        .auto-refresh {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: var(--card-bg);
-            border-radius: 25px;
+
+        .float-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            padding: 12px 20px;
+            box-shadow: var(--shadow);
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        .float-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .float-btn:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .source-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--text-primary);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.9em;
         }
     </style>
 </head>
@@ -232,197 +450,241 @@
             <p class="subtitle">自动收集 · 实时更新 · AI 圈热点播报</p>
             <div class="stats">
                 <div class="stat">
-                    <div class="stat-value" id="totalPosts"></div>
-                    <div class="stat-label">总帖子数</div>
+                    <div class="stat-value" id="totalPosts">--</div>
+                    <div class="stat-label">总热点</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value" id="todayPosts"></div>
-                    <div class="stat-label">今日更新</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-value" id="lastUpdate">--:--</div>
+                    <div class="stat-value" id="lastUpdate">--</div>
                     <div class="stat-label">最后更新</div>
                 </div>
             </div>
         </header>
 
-        <!-- 搜索过滤 -->
-        <div class="search-bar">
-            <input type="text" class="search-input" id="searchInput" placeholder="🔍 搜索帖子标题/标签...">
-            <button class="filter-btn" id="filterBtn">过滤</button>
-            <button class="filter-btn clear" id="clearFilterBtn">清空</button>
+        <div class="search-section">
+            <div class="search-bar">
+                <input type="text" class="search-input" id="searchInput" placeholder="🔍 搜索标题或标签..." onkeypress="if(event.key === 'Enter') filterPosts()">
+                <button class="btn btn-primary" onclick="filterPosts()">搜索</button>
+                <button class="btn btn-secondary" onclick="clearFilter()">重置</button>
+            </div>
         </div>
         
         <main class="posts" id="postsContainer">
             <div class="empty">
-                <h3>🌱 等待收集热点...</h3>
-                <p>每天自动收集 AI 圈热点</p>
+                <h3>🌱 加载中...</h3>
+                <p>正在获取最新 AI 热点...</p>
             </div>
         </main>
 
-        <!-- 分页 -->
         <div class="pagination" id="pagination"></div>
+
+        <footer>
+            <p>🤖 自动抓取 AI 热点 | Powered by OpenClaw</p>
+        </footer>
     </div>
-    
-    <div class="auto-refresh">
-            自动刷新: <span id="countdown">60</span>s
-    </div>
-    <div class="bottom-bar">
-            <button class="refresh-btn" onclick="loadPosts()">🔄 刷新</button>
-            <button class="theme-toggle" id="themeToggle">🌓</button>
+
+    <div class="bottom-float">
+        <div class="float-card">自动刷新: <span id="countdown">60</span>s</div>
+        <button class="float-btn" onclick="loadPosts()" title="刷新">🔄</button>
+        <button class="float-btn" onclick="toggleTheme()" title="切换主题">🌓</button>
     </div>
 
 <script>
-        // 主题
-        const themeKey = 'ai-forum-theme';
-        let currentTheme = localStorage.getItem(themeKey);
-        if (currentTheme) {
-            document.documentElement.setAttribute('data-theme', currentTheme);
-            document.documentElement.setAttribute('data-theme', currentTheme);
-        }
+let allPosts = [];
+let filteredPosts = [];
+let currentPage = 1;
+const postsPerPage = 10;
+let countdown = 60;
+let countdownInterval;
 
-        // 自动刷新倒计时
-        let countdownEl = document.getElementById('countdown');
-        let autoRefreshInterval;
-        let countdown = 60;
+// 主题切换
+const themeKey = "ai-forum-theme";
+function toggleTheme() {
+    if (document.body.classList.contains("light")) {
+        document.body.classList.remove("light");
+        localStorage.setItem(themeKey, "dark");
+    } else {
+        document.body.classList.add("light");
+        localStorage.setItem(themeKey, "light");
+    }
+}
 
-        function updateStats(total, today) {
-            document.getElementById('totalPosts').textContent = total;
-            document.getElementById('todayPosts').textContent = today;
-        }
+// 初始化主题
+if (localStorage.getItem(themeKey) === "light") {
+    document.body.classList.add("light");
+}
 
-        function loadPosts() {
-            fetch('data.json?t=' + Date.now())
-                .then(response => response.json())
-                .then(data => {
-                    renderPosts(data.posts);
-                    updateStats(data.posts.length, data.posts.length > 0 ? data.posts[data.posts.length - 1].updated_at : new Date().toISOString();
-                })
-                .catch(error => console.error('Error loading posts:', error));
-        }
+function formatTime(timestamp) {
+    const date = new Date(timestamp);
+    return date.toLocaleString("zh-CN", {
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
 
-        function renderPosts(posts) {
-            const container = document.getElementById('postsContainer');
-            const pagination = document.getElementById('pagination');
-            container.innerHTML = '';
-            
-            if (!posts || posts.length === 0) {
-                container.innerHTML = `
-                    <div class="empty">
-                        <h3>🌱 还没有帖子...</h3>
-                        <p>每天自动收集 AI 圈热点</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            posts.forEach((post, index) => {
-                const div = document.createElement('article');
-                div.className = 'post';
-                div.style.setProperty('--animation-index', index);
-                
-                // 添加标签
-                if (post.tags && post.tags.length > 0) {
-                    const tagsDiv = document.createElement('div');
-                    tagsDiv.className = 'tags';
-                    post.tags.forEach(tag => {
-                        const tagSpan = document.createElement('span');
-                        tagSpan.className = 'tag ' + tag.tag.toLowerCase();
-                        tagSpan.textContent = tag;
-                        tagsDiv.appendChild(tagSpan);
-                    });
-                }
-                
-                let postHTML = `
-                    <div class="post-header">
-                        <h2 class="post-title">${escapeHtml(post.title)}</h2>
-                        <div class="post-meta">
-                            <span class="post-score">${formatTime(post.timestamp)}</span>
-</div>
-`;
-                
-                if (post.score) {
-                    postHTML += `<div class="post-score">🔥 ${post.score}</div>`;
-                }
-                
-                if (post.content) {
-                    postHTML += `<p class="post-content">${escapeHtml(post.content)}</p>`;
-                }
-                
-                if (post.url) {
-                    postHTML += `<a href="${post.url}" target="_blank" class="post-link">🔗 阅读原文</a>`;
-                }
-                
-                postHTML += `</article>${escapeHtml(post.score)}</div></article>`;
-                container.appendChild(postHTML);
-                container.appendChild(div);
-            });
-            
-            container.appendChild(div);
+function escapeHtml(text) {
+    if (!text) return "";
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function updateStats(total, lastUpdateTime) {
+    document.getElementById("totalPosts").textContent = total;
+    document.getElementById("lastUpdate").textContent = new Date(lastUpdateTime).toLocaleTimeString("zh-CN", {
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
+
+function loadPosts() {
+    fetch("data.json?t=" + Date.now())
+        .then(response => response.json())
+        .then(data => {
+            allPosts = data.posts || [];
+            filteredPosts = [...allPosts];
+            updateStats(allPosts.length, data.lastUpdated || new Date());
+            renderPosts();
+            resetCountdown();
+        })
+        .catch(error => {
+            console.error("Error loading posts:", error);
+            document.getElementById("postsContainer").innerHTML = `
+                <div class="empty">
+                    <h3>❌ 加载失败</h3>
+                    <p>请稍后刷新重试</p>
+                </div>
+            `;
         });
+}
 
-            // 渲染分页
-            const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
-            const start = (currentPage - 1) * postsPerPage * posts.length;
-            const end = start + postsPerPage * currentPage;
-            pagination.innerHTML = '';
+function renderPosts() {
+    const container = document.getElementById("postsContainer");
+    const pagination = document.getElementById("pagination");
+    container.innerHTML = "";
 
-            for (let i = start; i < totalPages; i++) {
-                page++;
-                if (i < end >  in range(min);
-                container.appendChild(page);
-                container.appendChild(createPage(page);
+    if (filteredPosts.length === 0) {
+        container.innerHTML = `
+            <div class="empty">
+                <h3>🔍 没有找到匹配的内容</h3>
+                <p>尝试换个关键词搜索吧</p>
+            </div>
+        `;
+        pagination.innerHTML = "";
+        return;
+    }
+
+    const start = (currentPage - 1) * postsPerPage;
+    const end = start + postsPerPage;
+    const pagePosts = filteredPosts.slice(start, end);
+
+    pagePosts.forEach((post, index) => {
+        const div = document.createElement("article");
+        div.className = "post";
+        div.style.setProperty("--i", index);
+
+        let html = `
+            <div class="post-header">
+                <h2 class="post-title">${escapeHtml(post.title)}</h2>
+                <div class="post-meta">
+                    <span class="source-badge">${escapeHtml(post.source || "Unknown")}</span>
+                    ${post.score ? `<span class="score">🔥 ${post.score}</span>` : ""}
+                    <span>${formatTime(post.timestamp)}</span>
+                </div>
+            </div>
+        `;
+
+        if (post.tags && post.tags.length > 0) {
+            html += '<div class="tags">';
+            post.tags.forEach(tag => {
+                html += `<span class="tag ${tag}">${tag}</span>`;
             });
+            html += "</div>";
         }
 
-        function escapeHtml(text) {
-            return text
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;/g&gt;')
-                .replace(/</g>;
+        if (post.content) {
+            html += `<p class="post-content">${escapeHtml(post.content)}</p>`;
         }
 
-        function updateStats(totalPosts, totalPosts, todayPosts) {
-            document.getElementById('totalPosts').textContent = totalPosts;
-            document.getElementById('todayPosts').textContent = todayPosts;
+        if (post.url) {
+            html += `<a href="${post.url}" target="_blank" rel="noopener noreferrer" class="post-link">🔗 阅读原文</a>`;
         }
 
-        function renderPosts(data) {
-            container.innerHTML = '';
-            data.posts.forEach((post, index) => renderPosts(data));
-            if(data.length === 0) {
-                container.innerHTML = '<div class="empty">\n\t\t<h3>No matching posts found</h3>\n\t\t<p>每天会自动收集更新，敬请期待...</p>\n\t</div>\n\t</div>
+        div.innerHTML = html;
+        container.appendChild(div);
+    });
+
+    renderPagination();
+}
+
+function renderPagination() {
+    const pagination = document.getElementById("pagination");
+    const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+    if (totalPages <= 1) {
+        pagination.innerHTML = "";
+        return;
+    }
+
+    let html = "";
+    for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="page-btn ${i === currentPage ? "active" : ""}" onclick="goToPage(${i})">${i}</button>`;
+    }
+    pagination.innerHTML = html;
+}
+
+function goToPage(page) {
+    currentPage = page;
+    renderPosts();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function filterPosts() {
+    const searchText = document.getElementById("searchInput").value.toLowerCase().trim();
+    currentPage = 1;
+    
+    if (!searchText) {
+        filteredPosts = [...allPosts];
+    } else {
+        filteredPosts = allPosts.filter(post => {
+            const titleMatch = post.title && post.title.toLowerCase().includes(searchText);
+            const contentMatch = post.content && post.content.toLowerCase().includes(searchText);
+            const tagMatch = post.tags && post.tags.some(tag => tag.toLowerCase().includes(searchText));
+            return titleMatch || contentMatch || tagMatch;
+        });
+    }
+    
+    renderPosts();
+}
+
+function clearFilter() {
+    document.getElementById("searchInput").value = "";
+    filteredPosts = [...allPosts];
+    currentPage = 1;
+    renderPosts();
+}
+
+function resetCountdown() {
+    countdown = 60;
+    document.getElementById("countdown").textContent = countdown;
+    if (countdownInterval) {
+        clearInterval(countdownInterval);
+    }
+    countdownInterval = setInterval(() => {
+        countdown--;
+        document.getElementById("countdown").textContent = countdown;
+        if (countdown <= 0) {
+            loadPosts();
         }
+    }, 1000);
+}
 
-        // 加载帖子
-        loadPosts();
-
-        function renderPosts(data) {
-            const container = document.getElementById('postsContainer');
-            if (!data || data.length) {
-                container.innerHTML = `
-                    <div class="empty">
-                        <h3>🌱 等待收集热点...</h3>
-                        <p>每天自动收集 AI 圈热点</p>
-</div>
-                );
-            return;
-        }
-
-        function filterPosts() {
-            currentPage = 1;
-            currentPage = 1;
-            filteredPosts = posts.filter(post => {
-                const searchText = document.getElementById('searchInput').value.toLowerCase();
-                return !searchText ? searchText === '' ||
-                    post;
-                return post;
-            });
-            const hasSearchText = searchText.trim().toLowerCase();
-            return post;
-            });
-        }
-
-        // 分页功能都做好了，就是说你搜什么你做什么你要不去搜索找不到帖子，如果为空了，还是那句话就是搜索不到或者找不到，就让用户搜出来就是搜索不到帖子，容器里面还是空就是这个样子，搜索不到就返回说"
-                container.innerHTML = `
-                    <p style="
+// 初始加载
+loadPosts();
+resetCountdown();
+</script>
+</body>
+</html>
